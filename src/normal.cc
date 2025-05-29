@@ -835,6 +835,7 @@ constexpr RegexCompileFlags direction_flags(RegexMode mode)
 template<typename Func>
 void regex_prompt(Context& context, String prompt, char reg, RegexMode mode, Func func)
 {
+    const Regex prefix = context.options()["search_regex_prefix"].get<Regex>();
     kak_assert(is_direction(mode));
     DisplayCoord position = context.has_window() ? context.window().position() : DisplayCoord{};
     SelectionList selections = context.selections();
@@ -901,7 +902,7 @@ void regex_prompt(Context& context, String prompt, char reg, RegexMode mode, Fun
                     context.push_jump();
                     break;
                 }
-                func(Regex{str.empty() ? default_regex : str, direction_flags(mode)}, event, context);
+                func(Regex{str.empty() ? default_regex : String(prefix.str()) + str, direction_flags(mode)}, event, context);
             }
             catch (regex_error& err)
             {
@@ -982,11 +983,12 @@ void search(Context& context, NormalParams params, SelectMode mode, RegexMode re
 
 void search_next(Context& context, NormalParams params, SelectMode mode, RegexMode regex_mode)
 {
+    const Regex prefix = context.options()["search_regex_prefix"].get<Regex>();
     const char reg = to_lower(params.reg ? params.reg : '/');
     StringView str = RegisterManager::instance()[reg].get(context).front();
     if (not str.empty())
     {
-        Regex regex{str, direction_flags(regex_mode)};
+        Regex regex{String(prefix.str()) + str, direction_flags(regex_mode)};
         ScopedSelectionEdition selection_edition{context};
         auto& selections = context.selections();
         bool main_wrapped = false;

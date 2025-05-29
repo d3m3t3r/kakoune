@@ -619,6 +619,9 @@ void register_options()
         "set of pair of characters to be considered as matching pairs",
         { '(', ')', '{', '}', '[', ']', '<', '>' });
     reg.declare_option<int>("startup_info_version", "version up to which startup info changes should be hidden", 0);
+    reg.declare_option("search_regex_prefix",
+                       "prefix added to all searched regexes, intended for setting default modifier flags, e.g. (?i)",
+                       Regex{});
 }
 
 static Client* local_client = nullptr;

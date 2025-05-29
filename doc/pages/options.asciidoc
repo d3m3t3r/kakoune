@@ -228,6 +228,10 @@ are exclusively available to built-in options.
     _default_ true +
     execute search as it is typed
 
+*search_regex_prefix* `regex`::
+    prefix added to all searched regexes, this is intended to be used
+    for setting default modifier flags, e.g. `(?i)`
+
 *aligntab* `bool`::
     _default_ false +
     use tabs for alignment command
